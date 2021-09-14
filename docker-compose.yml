@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+    mongo:
+      container_name: mongodb
+      image: mongo:5-focal
+      restart: always
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ${ROOT}
+        MONGO_INITDB_ROOT_PASSWORD: ${PASS}
+      volumes:
+        - mongodb-store:/data/db
+        - mongodb-store:/data/configdb
+      
+    mongo-express:
+      container_name: mongodb_express
+      image: mongo-express:latest
+      restart: always
+      environment:
+        ME_CONFIG_MONGODB_URL: mongodb://${ROOT}:${PASS}@mongo:${PORT}/
+      ports:
+        - 8081:8081
+      depends_on: 
+        - mongo
+
+volumes:
+  mongodb-store:
